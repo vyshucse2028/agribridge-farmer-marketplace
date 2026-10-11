@@ -1,0 +1,43 @@
+# ============================================================
+# AgriBridge Root Git Ignore
+# ============================================================
+
+# Node / Frontend
+**/node_modules/
+**/dist/
+**/.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Java / Maven / Backend
+**/target/
+*.class
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# IDE & Editor files
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+*.log.*
+
+# Environment & temporary files
+.env
+.env.local
+.env.*.local
+.system_generated/
+.agents/

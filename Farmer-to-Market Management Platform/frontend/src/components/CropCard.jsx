@@ -44,13 +44,36 @@ const CropCard = ({ crop, onAddToCart, showActions = false, onEdit, onDelete }) 
 
       <div className="crop-card-actions">
         {role === 'BUYER' && crop.available && onAddToCart && (
-          <button
-            className="btn-primary"
-            onClick={() => onAddToCart(crop)}
-            id={`add-to-cart-${crop.id}`}
-          >
-            Add to Cart
-          </button>
+          <div style={{ display: 'flex', gap: '6px', width: '100%' }}>
+            <button
+              className="btn-primary"
+              style={{ flex: 1 }}
+              onClick={() => onAddToCart(crop)}
+              id={`add-to-cart-${crop.id}`}
+            >
+              🛒 Add to Cart
+            </button>
+            <button
+              style={{
+                flex: 1,
+                background: '#ff6f00',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                fontWeight: 600,
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+                padding: '0.5rem'
+              }}
+              onClick={() => {
+                onAddToCart(crop)
+                navigate('/buyer/cart')
+              }}
+              id={`buy-now-${crop.id}`}
+            >
+              ⚡ Buy Now
+            </button>
+          </div>
         )}
         {showActions && (
           <>

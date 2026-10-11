@@ -1,7 +1,0 @@
-{
-  "task_id": "task-agribridge-fix",
-  "task_description": "Fix critical bugs, add H2 database fallback, implement farmers map endpoint, and verify full project build and run",
-  "status": "pending",
-  "feature_order": ["FEAT-001", "FEAT-002", "FEAT-003", "FEAT-004"],
-  "blocked_reason": null
-}

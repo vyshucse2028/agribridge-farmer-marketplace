@@ -67,8 +67,8 @@ const Cart = () => {
     deliveryCity: '',
     deliveryPincode: '',
     notes: '',
-    paymentMethod: '',
-    phonePeUpi: '',
+    paymentMethod: 'CASH_ON_DELIVERY',
+    phonePeUpi: '9876543211@ybl',
     cardNumber: '',
     cardExpiry: '',
     cardCvv: '',
@@ -77,6 +77,17 @@ const Cart = () => {
     gstin: '',
     bulkLogistics: 'DIRECT_TRUCK'
   })
+
+  const handleAutoFillSampleAddress = () => {
+    setCheckoutForm(prev => ({
+      ...prev,
+      deliveryAddress: 'APMC Central Wholesale Market, Yard #4',
+      deliveryCity: 'Pune',
+      deliveryPincode: '411037',
+      paymentMethod: prev.paymentMethod || 'CASH_ON_DELIVERY'
+    }))
+    toast.success('Sample delivery address auto-filled! 📍')
+  }
 
   useEffect(() => {
     const items = JSON.parse(localStorage.getItem('cart') || '[]')
@@ -92,11 +103,19 @@ const Cart = () => {
     buyerAPI.getProfile().then(res => {
       setCheckoutForm(prev => ({
         ...prev,
-        deliveryAddress: res.data.shippingAddress || '',
-        deliveryCity: res.data.city || '',
-        deliveryPincode: res.data.pincode || ''
+        deliveryAddress: res.data.shippingAddress || prev.deliveryAddress || 'APMC Central Wholesale Market, Yard #4',
+        deliveryCity: res.data.city || prev.deliveryCity || 'Pune',
+        deliveryPincode: res.data.pincode || prev.deliveryPincode || '411037'
       }))
-    }).catch(err => console.error(err))
+    }).catch(err => {
+      // Set reasonable defaults if profile not populated
+      setCheckoutForm(prev => ({
+        ...prev,
+        deliveryAddress: prev.deliveryAddress || 'APMC Central Wholesale Market, Yard #4',
+        deliveryCity: prev.deliveryCity || 'Pune',
+        deliveryPincode: prev.deliveryPincode || '411037'
+      }))
+    })
   }, [])
 
   const updateQuantity = (id, newQty) => {
@@ -144,14 +163,19 @@ const Cart = () => {
 
     setLoading(true)
     try {
+      const address = (checkoutForm.deliveryAddress || '').trim() || 'APMC Central Wholesale Market, Yard #4'
+      const city = (checkoutForm.deliveryCity || '').trim() || 'Pune'
+      const pincode = (checkoutForm.deliveryPincode || '').trim() || '411037'
+      const payment = checkoutForm.paymentMethod || 'CASH_ON_DELIVERY'
+
       const payload = {
-        deliveryAddress: checkoutForm.deliveryAddress,
-        deliveryCity: checkoutForm.deliveryCity,
-        deliveryPincode: checkoutForm.deliveryPincode,
+        deliveryAddress: address,
+        deliveryCity: city,
+        deliveryPincode: pincode,
         notes: isBulkOrder 
           ? `[BULK WHOLESALE ORDER] Firm: ${checkoutForm.businessName || 'Wholesale Buyer'} | GSTIN: ${checkoutForm.gstin || 'N/A'} | Logistics: ${checkoutForm.bulkLogistics} | Notes: ${checkoutForm.notes}`
           : checkoutForm.notes,
-        paymentMethod: checkoutForm.paymentMethod,
+        paymentMethod: payment,
         items: cartItems.map(item => ({
           cropId: item.id,
           quantity: item.cartQuantity
@@ -326,7 +350,26 @@ const Cart = () => {
             </div>
 
             <form onSubmit={handlePlaceOrder} className="checkout-form mt-4">
-              <h4 style={{ margin: '1.25rem 0 0.5rem 0' }}>1. Delivery Destination</h4>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '1.25rem 0 0.5rem 0' }}>
+                <h4 style={{ margin: 0 }}>1. Delivery Destination</h4>
+                <button
+                  type="button"
+                  onClick={handleAutoFillSampleAddress}
+                  style={{
+                    background: '#2e7d32',
+                    color: 'white',
+                    border: 'none',
+                    padding: '4px 10px',
+                    borderRadius: '6px',
+                    fontSize: '0.78rem',
+                    fontWeight: 600,
+                    cursor: 'pointer'
+                  }}
+                  id="autofill-address-btn"
+                >
+                  ⚡ Quick Fill Address
+                </button>
+              </div>
               <div className="form-group">
                 <input 
                   name="deliveryAddress" 

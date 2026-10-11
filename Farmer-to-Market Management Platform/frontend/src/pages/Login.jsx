@@ -21,8 +21,9 @@ const Login = () => {
 
   const handlePasswordLogin = async (e) => {
     e.preventDefault()
-    if (!phone.trim()) {
-      return toast.warning('Please enter your mobile number')
+    const inputVal = phone.trim()
+    if (!inputVal) {
+      return toast.warning('Please enter your mobile number or email')
     }
     if (!password.trim()) {
       return toast.warning('Please enter your password')
@@ -30,10 +31,29 @@ const Login = () => {
 
     setLoading(true)
     try {
-      const res = await authAPI.login({ phone: phone.trim(), password })
+      const isEmail = inputVal.includes('@')
+      const payload = isEmail
+        ? { email: inputVal, password: password.trim() }
+        : { phone: inputVal, password: password.trim() }
+      const res = await authAPI.login(payload)
       handleLoginSuccess(res.data)
     } catch (err) {
       toast.error(err.response?.data?.message || 'Login failed. Please check your credentials.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const quickLogin = async (kind) => {
+    setLoading(true)
+    try {
+      const creds = kind === 'FARMER'
+        ? { phone: '9876543210', password: 'Farmer@123' }
+        : { phone: '9876543211', password: 'Buyer@123' }
+      const res = await authAPI.login(creds)
+      handleLoginSuccess(res.data)
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Quick login failed')
     } finally {
       setLoading(false)
     }
@@ -207,20 +227,18 @@ const Login = () => {
         {authMode === 'PASSWORD' && (
           <form onSubmit={handlePasswordLogin} className="auth-form" id="login-form">
             <div className="form-group">
-              <label htmlFor="login-phone">Mobile Number</label>
+              <label htmlFor="login-phone">Mobile Number or Email</label>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ background: '#2a2a2a', padding: '0.75rem 0.9rem', borderRadius: '8px', border: '1px solid var(--border-color)', color: '#aaa', fontWeight: 600 }}>
-                  +91
-                </span>
                 <input
                   id="login-phone"
-                  type="tel"
+                  type="text"
                   name="phone"
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                  placeholder="10-digit mobile number"
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="Enter 10-digit mobile number or email"
                   required
                   autoFocus
+                  style={{ width: '100%' }}
                 />
               </div>
             </div>
@@ -251,18 +269,58 @@ const Login = () => {
             <button type="submit" className="btn-auth-submit" disabled={loading} id="login-submit">
               {loading ? 'Logging in...' : `Login as ${userRole === 'FARMER' ? 'Farmer' : 'Buyer'}`}
             </button>
-            <div style={{ marginTop: '1rem', padding: '0.85rem', background: '#1c2e1f', borderRadius: '8px', border: '1px solid #2e7d32' }}>
-              <div style={{ fontSize: '0.82rem', color: '#81c784', fontWeight: 600, marginBottom: '0.5rem' }}>Quick demo login</div>
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                <button type="button" onClick={() => fillDemo('FARMER')} style={{ flex: 1, padding: '0.45rem', borderRadius: '6px', border: 'none', background: '#2e7d32', color: 'white', cursor: 'pointer', fontWeight: 600, fontSize: '0.8rem' }}>
-                  Fill Farmer (9876543210)
+
+            {/* FAST 1-CLICK INSTANT LOGIN (NO TYPING NEEDED) */}
+            <div style={{ marginTop: '1.25rem', padding: '1rem', background: '#1c2e1f', borderRadius: '10px', border: '1px solid #2e7d32' }}>
+              <div style={{ fontSize: '0.88rem', color: '#81c784', fontWeight: 700, marginBottom: '0.6rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span>⚡</span> Instant 1-Click Demo Login
+              </div>
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '8px' }}>
+                <button 
+                  type="button" 
+                  disabled={loading}
+                  onClick={() => quickLogin('FARMER')} 
+                  style={{ 
+                    flex: 1, 
+                    padding: '0.6rem 0.8rem', 
+                    borderRadius: '8px', 
+                    border: 'none', 
+                    background: '#2e7d32', 
+                    color: 'white', 
+                    cursor: loading ? 'not-allowed' : 'pointer', 
+                    fontWeight: 700, 
+                    fontSize: '0.85rem',
+                    boxShadow: '0 2px 8px rgba(46,125,50,0.4)'
+                  }}
+                  id="quick-farmer-login"
+                >
+                  🧑‍🌾 1-Click Farmer
                 </button>
-                <button type="button" onClick={() => fillDemo('BUYER')} style={{ flex: 1, padding: '0.45rem', borderRadius: '6px', border: 'none', background: '#1565c0', color: 'white', cursor: 'pointer', fontWeight: 600, fontSize: '0.8rem' }}>
-                  Fill Buyer (9876543211)
+                <button 
+                  type="button" 
+                  disabled={loading}
+                  onClick={() => quickLogin('BUYER')} 
+                  style={{ 
+                    flex: 1, 
+                    padding: '0.6rem 0.8rem', 
+                    borderRadius: '8px', 
+                    border: 'none', 
+                    background: '#1565c0', 
+                    color: 'white', 
+                    cursor: loading ? 'not-allowed' : 'pointer', 
+                    fontWeight: 700, 
+                    fontSize: '0.85rem',
+                    boxShadow: '0 2px 8px rgba(21,101,192,0.4)'
+                  }}
+                  id="quick-buyer-login"
+                >
+                  🛒 1-Click Buyer
                 </button>
               </div>
-              <div style={{ fontSize: '0.75rem', color: '#bbb', marginTop: '6px' }}>
-                Farmer password: Farmer@123 · Buyer password: Buyer@123
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.74rem', color: '#aaa', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '6px' }}>
+                <span>Farmer: 9876543210 / Farmer@123</span>
+                <span>Buyer: 9876543211 / Buyer@123</span>
               </div>
             </div>
           </form>

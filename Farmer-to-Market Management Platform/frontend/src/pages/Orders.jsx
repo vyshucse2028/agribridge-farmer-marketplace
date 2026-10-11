@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { orderAPI } from '../services/api'
 import { toast } from 'react-toastify'
 import TrackingMap from '../components/TrackingMap'
@@ -114,25 +115,45 @@ const Orders = () => {
                 : 'Track your farm-fresh orders from placement to doorstep delivery.'}
             </p>
           </div>
-          <button
-            onClick={() => fetchOrders()}
-            style={{
-              background: '#2e7d32',
-              color: 'white',
-              border: 'none',
-              padding: '8px 18px',
-              borderRadius: '8px',
-              fontWeight: 600,
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              fontSize: '0.88rem'
-            }}
-            id="refresh-orders-btn"
-          >
-            🔄 Refresh Orders
-          </button>
+          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+            <Link
+              to={role === 'FARMER' ? '/farmer/track' : '/buyer/track'}
+              style={{
+                background: '#6a1b9a',
+                color: 'white',
+                textDecoration: 'none',
+                padding: '8px 18px',
+                borderRadius: '8px',
+                fontWeight: 600,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: '0.88rem'
+              }}
+              id="full-screen-track-btn"
+            >
+              <span>🗺️</span> Live Goods Map
+            </Link>
+            <button
+              onClick={() => fetchOrders()}
+              style={{
+                background: '#2e7d32',
+                color: 'white',
+                border: 'none',
+                padding: '8px 18px',
+                borderRadius: '8px',
+                fontWeight: 600,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: '0.88rem'
+              }}
+              id="refresh-orders-btn"
+            >
+              🔄 Refresh Orders
+            </button>
+          </div>
         </div>
       </div>
 
@@ -273,7 +294,7 @@ const Orders = () => {
                     padding: '1.25rem 1.5rem',
                     cursor: 'pointer',
                     display: 'grid',
-                    gridTemplateColumns: role === 'FARMER' ? '1fr 1fr 1fr 1fr auto auto' : '1fr 1fr 1fr 1fr auto',
+                    gridTemplateColumns: role === 'FARMER' ? '1fr 1fr 1fr 1fr auto auto auto' : '1fr 1fr 1fr 1fr auto auto',
                     alignItems: 'center',
                     gap: '1rem',
                     transition: 'background 0.2s',
@@ -401,6 +422,37 @@ const Orders = () => {
                       )}
                     </div>
                   )}
+
+                  {/* Direct Map Option for Both Farmer & Buyer */}
+                  <div onClick={(e) => e.stopPropagation()}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const willOpen = showMap !== order.id
+                        setShowMap(willOpen ? order.id : null)
+                        if (willOpen && !isExpanded) {
+                          setExpandedOrder(order.id)
+                        }
+                      }}
+                      style={{
+                        padding: '0.4rem 0.9rem',
+                        borderRadius: '8px',
+                        border: '1px solid #9c27b0',
+                        background: isMapOpen ? '#9c27b0' : 'rgba(156, 39, 176, 0.15)',
+                        color: 'white',
+                        fontWeight: 600,
+                        fontSize: '0.82rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '5px',
+                        whiteSpace: 'nowrap'
+                      }}
+                      id={`order-track-btn-${order.id}`}
+                    >
+                      <span>🗺️</span> {isMapOpen ? 'Close Map' : 'Track Map'}
+                    </button>
+                  </div>
 
                   {/* Expand Icon */}
                   <div style={{

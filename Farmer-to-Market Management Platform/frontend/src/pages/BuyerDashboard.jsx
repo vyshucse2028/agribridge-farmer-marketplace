@@ -140,6 +140,15 @@ const BuyerDashboard = () => {
             <p className="stat-value">{activeOrders}</p>
           </div>
         </div>
+        <Link to="/buyer/track" style={{ textDecoration: 'none' }}>
+          <div className="stat-card" style={{ border: '1px solid #9c27b0', background: 'rgba(156, 39, 176, 0.1)', cursor: 'pointer', height: '100%' }}>
+            <div className="stat-icon">🗺️</div>
+            <div className="stat-info">
+              <h3 style={{ color: '#ce93d8' }}>Live Goods Map</h3>
+              <p className="stat-value" style={{ fontSize: '1rem', color: '#81c784', marginTop: '4px' }}>Track Dispatches →</p>
+            </div>
+          </div>
+        </Link>
       </div>
 
       {/* Agriculture & Market News */}
@@ -223,21 +232,39 @@ const BuyerDashboard = () => {
                   <th>Date</th>
                   <th>Status</th>
                   <th>Amount</th>
+                  <th>Live Map Option</th>
                 </tr>
               </thead>
               <tbody>
                 {orders.slice(0, 5).map(order => (
                   <tr key={order.id}>
-                    <td>{order.orderNumber}</td>
+                    <td style={{ fontWeight: 600 }}>{order.orderNumber}</td>
                     <td>{new Date(order.createdAt).toLocaleDateString()}</td>
                     <td>
                       <span className={`status-badge status-${order.status.toLowerCase()}`}>
                         {order.status}
                       </span>
                     </td>
-                    <td>₹{order.totalAmount.toFixed(2)}</td>
+                    <td style={{ fontWeight: 700, color: 'white' }}>₹{order.totalAmount.toFixed(2)}</td>
                     <td>
-                      <Link to="/buyer/track" style={{ color: '#ce93d8', fontWeight: 600, textDecoration: 'none' }}>🗺️ Track</Link>
+                      <Link 
+                        to="/buyer/track" 
+                        style={{ 
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '5px',
+                          background: 'rgba(156, 39, 176, 0.2)',
+                          border: '1px solid #9c27b0',
+                          color: '#e1bee7',
+                          padding: '4px 12px',
+                          borderRadius: '6px',
+                          fontWeight: 600,
+                          fontSize: '0.82rem',
+                          textDecoration: 'none'
+                        }}
+                      >
+                        🗺️ Track on Map
+                      </Link>
                     </td>
                   </tr>
                 ))}

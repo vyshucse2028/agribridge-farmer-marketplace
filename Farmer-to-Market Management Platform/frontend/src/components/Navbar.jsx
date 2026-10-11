@@ -14,9 +14,18 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.clear()
     navigate('/login')
+    setMenuOpen(false)
   }
 
   const isActive = (path) => location.pathname === path ? 'active' : ''
+
+  const dashPath = role === 'FARMER'
+    ? '/farmer/dashboard'
+    : role === 'BUYER'
+    ? '/buyer/dashboard'
+    : role === 'ADMIN'
+    ? '/admin/dashboard'
+    : '/'
 
   return (
     <nav className="navbar">
@@ -37,25 +46,38 @@ const Navbar = () => {
         </button>
 
         <ul className={`navbar-links ${menuOpen ? 'open' : ''}`}>
-          <li><Link to="/" className={isActive('/')}>Home</Link></li>
-          <li><Link to="/crops" className={isActive('/crops')}>Browse Crops</Link></li>
+          <li><Link to="/" className={isActive('/')} onClick={() => setMenuOpen(false)}>Home</Link></li>
+          <li><Link to="/crops" className={isActive('/crops')} onClick={() => setMenuOpen(false)}>Browse Crops</Link></li>
 
           {token && (
             <>
+              <li>
+                <Link to={dashPath} className={isActive(dashPath)} onClick={() => setMenuOpen(false)}>
+                  {role === 'FARMER' ? '🧑‍🌾' : role === 'BUYER' ? '🛒' : '⚙️'} Dashboard
+                </Link>
+              </li>
+
               {role === 'FARMER' && (
-                <li><Link to="/farmer/add-crop" className={isActive('/farmer/add-crop')}>+ Add Crop</Link></li>
+                <li>
+                  <Link to="/farmer/add-crop" className={isActive('/farmer/add-crop')} onClick={() => setMenuOpen(false)}>
+                    + Add Crop
+                  </Link>
+                </li>
               )}
               {role === 'BUYER' && (
-                <>
-                  <li><Link to="/buyer/cart" className={isActive('/buyer/cart')}>🛒 Cart</Link></li>
-                </>
+                <li>
+                  <Link to="/buyer/cart" className={isActive('/buyer/cart')} onClick={() => setMenuOpen(false)}>
+                    🛒 Cart
+                  </Link>
+                </li>
               )}
               <li>
                 <Link
                   to={role === 'FARMER' ? '/farmer/orders' : '/buyer/orders'}
                   className={isActive(role === 'FARMER' ? '/farmer/orders' : '/buyer/orders')}
+                  onClick={() => setMenuOpen(false)}
                 >
-                  Orders
+                  📦 Orders
                 </Link>
               </li>
               {(role === 'FARMER' || role === 'BUYER') && (
@@ -63,13 +85,18 @@ const Navbar = () => {
                   <Link
                     to={role === 'FARMER' ? '/farmer/track' : '/buyer/track'}
                     className={isActive(role === 'FARMER' ? '/farmer/track' : '/buyer/track')}
+                    onClick={() => setMenuOpen(false)}
                   >
-                    🗺️ Track Map
+                    🗺️ Track Goods (Map)
                   </Link>
                 </li>
               )}
               {role === 'ADMIN' && (
-                <li><Link to="/admin/dashboard" className={isActive('/admin/dashboard')}>Admin Panel</Link></li>
+                <li>
+                  <Link to="/admin/dashboard" className={isActive('/admin/dashboard')} onClick={() => setMenuOpen(false)}>
+                    ⚙️ Admin
+                  </Link>
+                </li>
               )}
             </>
           )}
@@ -78,13 +105,15 @@ const Navbar = () => {
         <div className="navbar-actions">
           {token ? (
             <div className="user-menu">
-              <span className="user-greeting">Hi, {firstName} 👋</span>
-              <button className="btn-logout" onClick={handleLogout}>Logout</button>
+              <Link to={dashPath} style={{ textDecoration: 'none' }}>
+                <span className="user-greeting">Hi, {firstName} 👋</span>
+              </Link>
+              <button className="btn-logout" onClick={handleLogout} id="logout-btn">Logout</button>
             </div>
           ) : (
             <div className="auth-buttons">
-              <Link to="/login" className="btn-login">Login</Link>
-              <Link to="/register" className="btn-register">Register</Link>
+              <Link to="/login" className="btn-login" id="nav-login-btn">Login</Link>
+              <Link to="/register" className="btn-register" id="nav-register-btn">Register</Link>
             </div>
           )}
         </div>

@@ -453,11 +453,11 @@ const FarmerDashboard = () => {
                     </td>
                     <td>₹{order.totalAmount.toFixed(2)}</td>
                     <td>
-                      <Link to="/farmer/orders" className="btn-sm btn-secondary" style={{ padding: '4px 10px', fontSize: '0.8rem', borderRadius: '4px', textDecoration: 'none', marginRight: '6px' }}>
-                        Manage
+                      <Link to="/farmer/orders" className="btn-sm btn-secondary" style={{ padding: '5px 12px', fontSize: '0.8rem', borderRadius: '6px', textDecoration: 'none', marginRight: '6px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        📋 Manage
                       </Link>
-                      <Link to="/farmer/track" style={{ padding: '4px 10px', fontSize: '0.8rem', borderRadius: '4px', textDecoration: 'none', background: '#6a1b9a', color: 'white' }}>
-                        Map
+                      <Link to="/farmer/track" style={{ padding: '5px 12px', fontSize: '0.8rem', borderRadius: '6px', textDecoration: 'none', background: '#6a1b9a', color: 'white', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
+                        🗺️ Track Map
                       </Link>
                     </td>
                   </tr>
