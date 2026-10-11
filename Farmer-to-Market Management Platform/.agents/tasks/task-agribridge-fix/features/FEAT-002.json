@@ -1,0 +1,29 @@
+{
+  "id": "FEAT-002",
+  "type": "feat",
+  "description": "Add H2 in-memory database fallback profile for when MySQL is not running or credentials are wrong. Create application-h2.properties with H2 configuration and update application.properties with clear MySQL requirement comments and fallback instructions. H2 dependency already exists in pom.xml.",
+  "status": "completed",
+  "steps": [
+    "Read c:\\25EG505V04\\AgriBridge\\Farmer-to-Market Management Platform\\backend\\pom.xml to confirm H2 dependency exists (already verified: com.h2database:h2:runtime scope)",
+    "Create new file c:\\25EG505V04\\AgriBridge\\Farmer-to-Market Management Platform\\backend\\src\\main\\resources\\application-h2.properties with H2 in-memory configuration: spring.datasource.url=jdbc:h2:mem:agribridge_db, driver-class-name=org.h2.Driver, username=sa, password=<empty>, dialect=H2Dialect, ddl-auto=create-drop, h2.console.enabled=true at path /h2-console",
+    "Update c:\\25EG505V04\\AgriBridge\\Farmer-to-Market Management Platform\\backend\\src\\main\\resources\\application.properties: add comment block before Database section explaining MySQL is PRIMARY, requirements (localhost:3306, root/vyshu092007), auto-creation of agribridge_db, and FALLBACK instructions to run with profile h2 using mvn spring-boot:run -Dspring-boot.run.profiles=h2",
+    "Compile backend to ensure no configuration errors: mvn clean compile",
+    "Commit locally with message 'feat: add H2 in-memory database fallback profile'"
+  ],
+  "acceptance_criteria": [
+    "application-h2.properties created with valid H2 datasource configuration",
+    "application.properties updated with clear MySQL requirement and H2 fallback instructions in comments",
+    "H2 console enabled at /h2-console path when h2 profile is active",
+    "Backend compiles successfully",
+    "No changes to pom.xml needed (H2 dependency already present)"
+  ],
+  "verification": [
+    "Run mvn clean compile - must show BUILD SUCCESS",
+    "Run backend with H2 profile: mvn spring-boot:run -Dspring-boot.run.profiles=h2 in backend directory",
+    "Backend must start successfully and show 'Started AgriBridgeApplication' in console",
+    "Access H2 console at http://localhost:8080/h2-console with JDBC URL jdbc:h2:mem:agribridge_db, username sa, password empty - must connect and show tables",
+    "Access Swagger UI at http://localhost:8080/swagger-ui.html - must load successfully"
+  ],
+  "blocked_reason": null,
+  "findings": "Successfully created application-h2.properties with H2 in-memory database configuration. Updated application.properties with detailed MySQL requirements and H2 fallback instructions. Backend compiles successfully with BUILD SUCCESS. H2 dependency was already present in pom.xml as expected. Git repository initialized and changes committed locally."
+}

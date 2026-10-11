@@ -1,0 +1,29 @@
+{
+  "project_type": "Spring Boot 3.2.0 backend + React 18 + Vite 5 frontend, REST API with JWT auth",
+  "language": "Java 17 (backend), JavaScript/JSX (frontend)",
+  "build_system": "Maven 3.x (backend), npm/Vite (frontend). H2 database already in pom.xml dependencies.",
+  "test_framework": "JUnit/Spring Test (backend), no tests in frontend currently",
+  "build_command": "Backend: mvn clean install -DskipTests; Frontend: npm install && npm run build",
+  "test_command": "Backend: mvn test; Frontend: npm run lint",
+  "verification_instructions": "1. Backend compile: mvn clean compile (must succeed). 2. Backend run: mvn spring-boot:run (default MySQL) or mvn spring-boot:run -Dspring-boot.run.profiles=h2 (H2 fallback). 3. Verify Swagger UI at http://localhost:8080/swagger-ui.html. 4. Frontend: npm run dev, access http://localhost:5173. 5. Test login with farmer (9876543210/Farmer@123) and buyer (9876543211/Buyer@123). 6. Test GET /api/crops/my-crops as farmer (JWT required). 7. Test GET /api/farmers/map (public, no auth).",
+  "snapshot_or_generated_files": "None. Maven produces target/ and npm produces dist/, but these are not checked in.",
+  "environment_constraints": "MySQL may not be running on localhost:3306 with credentials root/vyshu092007, hence H2 fallback profile is needed. Backend runs on port 8080, frontend on 5173. CORS allowed origin is http://localhost:5173 in application.properties.",
+  "contribution_requirements": "No CONTRIBUTING.md or AGENTS.md found in this project. Standard Spring Boot + React patterns apply. All Java classes use Lombok annotations. DTOs follow naming convention *Dto.java in com.agribridge.dto package. Controllers use Swagger @Operation annotations. Repository methods follow Spring Data JPA naming conventions.",
+  "key_patterns": "Backend: Entity classes in com.agribridge.entity with Lombok @Data/@Builder, Repository interfaces extend JpaRepository in com.agribridge.repository, Service classes in com.agribridge.service with @Service and constructor injection via @RequiredArgsConstructor, Controllers in com.agribridge.controller with @RestController and @RequestMapping, JWT auth uses UserDetails from authenticated principal cast to User entity. Frontend: React functional components with hooks, Axios API calls in src/services/api.js, React Router for navigation, Leaflet maps via react-leaflet, localStorage for JWT token and role.",
+  "relevant_files": [
+    "c:\\25EG505V04\\AgriBridge\\Farmer-to-Market Management Platform\\backend\\pom.xml",
+    "c:\\25EG505V04\\AgriBridge\\Farmer-to-Market Management Platform\\backend\\src\\main\\resources\\application.properties",
+    "c:\\25EG505V04\\AgriBridge\\Farmer-to-Market Management Platform\\backend\\src\\main\\java\\com\\agribridge\\service\\CropService.java",
+    "c:\\25EG505V04\\AgriBridge\\Farmer-to-Market Management Platform\\backend\\src\\main\\java\\com\\agribridge\\controller\\CropController.java",
+    "c:\\25EG505V04\\AgriBridge\\Farmer-to-Market Management Platform\\backend\\src\\main\\java\\com\\agribridge\\repository\\CropRepository.java",
+    "c:\\25EG505V04\\AgriBridge\\Farmer-to-Market Management Platform\\backend\\src\\main\\java\\com\\agribridge\\repository\\FarmerRepository.java",
+    "c:\\25EG505V04\\AgriBridge\\Farmer-to-Market Management Platform\\backend\\src\\main\\java\\com\\agribridge\\entity\\Farmer.java",
+    "c:\\25EG505V04\\AgriBridge\\Farmer-to-Market Management Platform\\backend\\src\\main\\java\\com\\agribridge\\service\\FarmerService.java",
+    "c:\\25EG505V04\\AgriBridge\\Farmer-to-Market Management Platform\\backend\\src\\main\\java\\com\\agribridge\\controller\\FarmerController.java",
+    "c:\\25EG505V04\\AgriBridge\\Farmer-to-Market Management Platform\\backend\\src\\main\\java\\com\\agribridge\\config\\OpenApiConfig.java",
+    "c:\\25EG505V04\\AgriBridge\\Farmer-to-Market Management Platform\\frontend\\package.json",
+    "c:\\25EG505V04\\AgriBridge\\Farmer-to-Market Management Platform\\frontend\\src\\pages\\TrackGoods.jsx",
+    "c:\\25EG505V04\\AgriBridge\\Farmer-to-Market Management Platform\\frontend\\src\\components\\TrackingMap.jsx"
+  ],
+  "directory_structure": "backend/src/main/java/com/agribridge/{config,controller,dto,entity,exception,repository,service,util} + backend/src/main/resources/{application.properties, static/, templates/} + frontend/src/{components,pages,services,styles} + frontend/public/"
+}
